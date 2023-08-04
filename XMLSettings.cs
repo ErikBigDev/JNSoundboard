@@ -7,171 +7,176 @@ using System.Xml.Serialization;
 
 namespace JNSoundboard
 {
-    public class XMLSettings
-    {
-        readonly static SoundboardSettings DEFAULT_SOUNDBOARD_SETTINGS = new SoundboardSettings(new Keys[] { }, new LoadXMLFile[] { new LoadXMLFile(new Keys[] { }, "") }, true, "", "");
+	public class XMLSettings
+	{
+		readonly static SoundboardSettings DEFAULT_SOUNDBOARD_SETTINGS = new SoundboardSettings(new Keys[] { }, new LoadXMLFile[] { new LoadXMLFile(new Keys[] { }, "") }, true, 100, "", "", "");
 
-        internal static SoundboardSettings soundboardSettings = new SoundboardSettings();
+		internal static SoundboardSettings soundboardSettings = new SoundboardSettings();
 
-        //saving XML files like this makes the XML messy, but it works
-        #region Keys and sounds settings
-        public class SoundHotkey
-        {
-            public Keys[] Keys;
-            public string WindowTitle;
-            public string[] SoundLocations;
+		//saving XML files like this makes the XML messy, but it works
+		#region Keys and sounds settings
+		public class SoundHotkey
+		{
+			public Keys[] Keys;
+			public string WindowTitle;
+			public string[] SoundLocations;
 
-            public SoundHotkey() { }
+			public SoundHotkey() { }
 
-            public SoundHotkey(Keys[] keys, string windowTitle, string[] soundLocs)
-            {
-                Keys = keys;
-                WindowTitle = windowTitle;
-                SoundLocations = soundLocs;
-            }
-        }
+			public SoundHotkey(Keys[] keys, string windowTitle, string[] soundLocs)
+			{
+				Keys = keys;
+				WindowTitle = windowTitle;
+				SoundLocations = soundLocs;
+			}
+		}
 
-        [Serializable]
-        public class Settings
-        {
-            public SoundHotkey[] SoundHotkeys;
+		[Serializable]
+		public class Settings
+		{
+			public SoundHotkey[] SoundHotkeys;
 
-            public Settings() { }
+			public Settings() { }
 
-            public Settings(SoundHotkey[] sh)
-            {
-                SoundHotkeys = sh;
-            }
-        }
-        #endregion
+			public Settings(SoundHotkey[] sh)
+			{
+				SoundHotkeys = sh;
+			}
+		}
+		#endregion
 
-        #region Soundboard settings
-        public class LoadXMLFile
-        {
-            public Keys[] Keys;
-            public string XMLLocation;
+		#region Soundboard settings
+		public class LoadXMLFile
+		{
+			public Keys[] Keys;
+			public string XMLLocation;
 
-            public LoadXMLFile() { }
+			public LoadXMLFile() { }
 
-            public LoadXMLFile(Keys[] keys, string xmlLocation)
-            {
-                Keys = keys;
-                XMLLocation = xmlLocation;
-            }
-        }
+			public LoadXMLFile(Keys[] keys, string xmlLocation)
+			{
+				Keys = keys;
+				XMLLocation = xmlLocation;
+			}
+		}
 
-        [Serializable]
-        public class SoundboardSettings
-        {
-            public Keys[] StopSoundKeys;
-            public LoadXMLFile[] LoadXMLFiles;
-            public bool MinimizeToTray;
-            public string LastPlaybackDevice, LastLoopbackDevice;
+		[Serializable]
+		public class SoundboardSettings
+		{
+			public Keys[] StopSoundKeys;
+			public LoadXMLFile[] LoadXMLFiles;
+			public bool MinimizeToTray;
+			public int Volume;
+			public string LastPlaybackDeviceLocal, LastPlaybackDevice, LastLoopbackDevice;
 
-            public SoundboardSettings() { }
+			public SoundboardSettings() { }
 
-            public SoundboardSettings(Keys[] stopSoundKeys, LoadXMLFile[] loadXMLFiles, bool minimizeToTray, string lastPlaybackDevice, string lastLoopbackDevice)
-            {
-                StopSoundKeys = stopSoundKeys;
-                LoadXMLFiles = loadXMLFiles;
-                MinimizeToTray = minimizeToTray;
-                LastPlaybackDevice = lastPlaybackDevice;
-                LastLoopbackDevice = lastLoopbackDevice;
-            }
-        }
-        #endregion
+			public SoundboardSettings(Keys[] stopSoundKeys, LoadXMLFile[] loadXMLFiles, bool minimizeToTray, int volume, string lastPlaybackDeviceLocal, string lastPlaybackDevice, string lastLoopbackDevice)
+			{
+				StopSoundKeys = stopSoundKeys;
+				LoadXMLFiles = loadXMLFiles;
+				MinimizeToTray = minimizeToTray;
+				Volume = volume;
+				LastPlaybackDeviceLocal = lastPlaybackDeviceLocal;
+				LastPlaybackDevice = lastPlaybackDevice;
+				LastLoopbackDevice = lastLoopbackDevice;
+			}
+		}
+		#endregion
 
-        internal static void WriteXML(object kl, string xmlLoc)
-        {
-            XmlSerializer serializer = new XmlSerializer(kl.GetType());
+		internal static void WriteXML(object kl, string xmlLoc)
+		{
+			XmlSerializer serializer = new XmlSerializer(kl.GetType());
 
-            using (MemoryStream memStream = new MemoryStream())
-            {
-                using (StreamWriter stream = new StreamWriter(memStream, Encoding.Unicode))
-                {
-                    var settings = new XmlWriterSettings();
-                    settings.Indent = true;
-                    settings.OmitXmlDeclaration = true;
+			using (MemoryStream memStream = new MemoryStream())
+			{
+				using (StreamWriter stream = new StreamWriter(memStream, Encoding.Unicode))
+				{
+					var settings = new XmlWriterSettings();
+					settings.Indent = true;
+					settings.OmitXmlDeclaration = true;
 
-                    using (var writer = XmlWriter.Create(stream, settings))
-                    {
-                        var emptyNamepsaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
-                        serializer.Serialize(writer, kl, emptyNamepsaces);
+					using (var writer = XmlWriter.Create(stream, settings))
+					{
+						var emptyNamepsaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
+						serializer.Serialize(writer, kl, emptyNamepsaces);
 
-                        int count = (int)memStream.Length;
+						int count = (int)memStream.Length;
 
-                        byte[] arr = new byte[count];
-                        memStream.Seek(0, SeekOrigin.Begin);
+						byte[] arr = new byte[count];
+						memStream.Seek(0, SeekOrigin.Begin);
 
-                        memStream.Read(arr, 0, count);
+						memStream.Read(arr, 0, count);
 
-                        using (BinaryWriter binWriter = new BinaryWriter(File.Open(xmlLoc, FileMode.Create)))
-                        {
-                            binWriter.Write(arr);
-                        }
-                    }
-                }
-            }
-        }
+						using (BinaryWriter binWriter = new BinaryWriter(File.Open(xmlLoc, FileMode.Create)))
+						{
+							binWriter.Write(arr);
+						}
+					}
+				}
+			}
+		}
 
-        internal static object ReadXML(Type type, string xmlLoc)
-        {
-            var serializer = new XmlSerializer(type);
+		internal static object ReadXML(Type type, string xmlLoc)
+		{
+			var serializer = new XmlSerializer(type);
 
-            using (var reader = XmlReader.Create(xmlLoc))
-            {
-                if (serializer.CanDeserialize(reader))
-                {
-                    return serializer.Deserialize(reader);
-                }
-                else return null;
-            }
-        }
+			using (var reader = XmlReader.Create(xmlLoc))
+			{
+				if (serializer.CanDeserialize(reader))
+				{
+					return serializer.Deserialize(reader);
+				}
+				else return null;
+			}
+		}
 
-        internal static void SaveSoundboardSettingsXML()
-        {
-            WriteXML(soundboardSettings, Path.GetDirectoryName(Application.ExecutablePath) + "\\settings.xml");
-        }
+		internal static void SaveSoundboardSettingsXML()
+		{
+			WriteXML(soundboardSettings, Path.GetDirectoryName(Application.ExecutablePath) + "\\settings.xml");
+		}
 
-        internal static void LoadSoundboardSettingsXML()
-        {
-            string filePath = Path.GetDirectoryName(Application.ExecutablePath) + "\\settings.xml";
+		internal static void LoadSoundboardSettingsXML()
+		{
+			string filePath = Path.GetDirectoryName(Application.ExecutablePath) + "\\settings.xml";
 
-            if (File.Exists(filePath))
-            {
-                SoundboardSettings settings;
+			if (File.Exists(filePath))
+			{
+				SoundboardSettings settings;
 
-                try
-                {
-                    settings = (SoundboardSettings)ReadXML(typeof(SoundboardSettings), filePath);
-                }
-                catch
-                {
-                    soundboardSettings = DEFAULT_SOUNDBOARD_SETTINGS;
-                    return;
-                }
+				try
+				{
+					settings = (SoundboardSettings)ReadXML(typeof(SoundboardSettings), filePath);
+				}
+				catch
+				{
+					soundboardSettings = DEFAULT_SOUNDBOARD_SETTINGS;
+					return;
+				}
 
-                if (settings == null)
-                {
-                    soundboardSettings = DEFAULT_SOUNDBOARD_SETTINGS;
-                    return;
-                }
+				if (settings == null)
+				{
+					soundboardSettings = DEFAULT_SOUNDBOARD_SETTINGS;
+					return;
+				}
 
-                if (settings.StopSoundKeys == null) settings.StopSoundKeys = new Keys[] { };
+				if (settings.StopSoundKeys == null) settings.StopSoundKeys = new Keys[] { };
 
-                if (settings.LoadXMLFiles == null) settings.LoadXMLFiles = new LoadXMLFile[] { };
+				if (settings.LoadXMLFiles == null) settings.LoadXMLFiles = new LoadXMLFile[] { };
 
-                if (settings.LastPlaybackDevice == null) settings.LastPlaybackDevice = "";
+				if (settings.LastPlaybackDeviceLocal == null) settings.LastPlaybackDeviceLocal = "";
 
-                if (settings.LastLoopbackDevice == null) settings.LastLoopbackDevice = "";
+				if (settings.LastPlaybackDevice == null) settings.LastPlaybackDevice = "";
 
-                soundboardSettings = settings;
-            }
-            else
-            {
-                WriteXML(DEFAULT_SOUNDBOARD_SETTINGS, filePath);
-                soundboardSettings = DEFAULT_SOUNDBOARD_SETTINGS;
-            }
-        }
-    }
+				if (settings.LastLoopbackDevice == null) settings.LastLoopbackDevice = "";
+
+				soundboardSettings = settings;
+			}
+			else
+			{
+				WriteXML(DEFAULT_SOUNDBOARD_SETTINGS, filePath);
+				soundboardSettings = DEFAULT_SOUNDBOARD_SETTINGS;
+			}
+		}
+	}
 }
