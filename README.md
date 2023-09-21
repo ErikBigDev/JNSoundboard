@@ -1,3 +1,5 @@
+Icon by Pixel perfect
+
 # JN Soundboard
 A program written in C# using the NAudio library that uses hotkeys to play sounds into a chosen sound device. It is similar to [EXP Soundboard](https://sourceforge.net/projects/expsoundboard/), except that JN Soundboard is not as cross-platform as EXP, but, there are more features in JN than EXP.
 
@@ -34,4 +36,8 @@ Screenshots:
 ![Settings window](https://i.imgur.com/yYsm1TR.jpg)
 
 ![Text-to-speech window](https://i.imgur.com/EoPayHn.png)
+
+
+### Credits:
+![volume](https://cdn-icons-png.flaticon.com/16/727/727350.png?filename=volume_727350.png&fd=1) [Volume Icon by Pixel perfect](https://www.freepik.com/icon/volume_727350)
 
