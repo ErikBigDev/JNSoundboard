@@ -18,7 +18,7 @@ Features:
 * Text-to-speech
 
 Requires: 
-* .NET Framework 4.6
+* .NET 6 Runtime
 * NAudio
 
 How to play sound effects over microphone:
@@ -28,7 +28,7 @@ Lastly, in the application that is going to use the microphone, set the micropho
 
 Screenshots: 
 
-![Main window](https://i.imgur.com/7mGHN9g.jpg)
+![Main window](https://i.imgur.com/ZLCoc3s.png)
 
 ![Add hokey window](https://i.imgur.com/pgKoli1.jpg)
 
