@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
+//using System.Runtime.Remoting.Messaging;
 
 namespace JNSoundboard
 {
